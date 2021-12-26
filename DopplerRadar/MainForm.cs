@@ -9,6 +9,7 @@ namespace DopplerRadar
     public partial class MainForm : Form
     {
         private delegate void SafeCallDelegate(float[] soundData, Complex[] spectrum);
+
         private readonly SignalProcessor _signalProcessor = new SignalProcessor();
         private int _windowFreq = 200;
         private DirectBitmap _dbmSpectrum;
@@ -23,8 +24,14 @@ namespace DopplerRadar
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            _signalProcessor.StartRecord((soundData, spectrum)
-                => Invoke(new SafeCallDelegate(UIOnAudioDataReceived), soundData, spectrum));
+            IAsyncResult asyncResult = null;
+            _signalProcessor.StartRecord((soundData, spectrum) =>
+            {
+                if ((asyncResult == null || asyncResult.IsCompleted))
+                {
+                    asyncResult = BeginInvoke(new SafeCallDelegate(UIOnAudioDataReceived), soundData, spectrum);
+                }
+            });
         }
 
         private void btnStop_Click(object sender, EventArgs e)
@@ -113,6 +120,11 @@ namespace DopplerRadar
         private void UpdateSoundSpeed()
         {
             _soundSpeed = 331 + 0.6f * (int)numTemperature.Value;
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _signalProcessor.StopRecord();
         }
     }
 }

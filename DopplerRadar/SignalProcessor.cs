@@ -10,7 +10,7 @@ using NAudio.Wave;
 
 namespace DopplerRadar
 {
-    internal class SignalProcessor
+    public class SignalProcessor
     {
         public const int SampleRate = 96000; // Bin/s
         public const int NChannels = 1;
