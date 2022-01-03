@@ -5,6 +5,12 @@ VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DopplerRadar", "DopplerRadar\DopplerRadar.csproj", "{44287265-50AB-445C-90CB-11D892A45FAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhaseDetector", "PhaseDetector\PhaseDetector.csproj", "{BE5C528B-074A-4F1D-9111-213B148C0507}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalLibrary", "SignalLibrary\SignalLibrary.csproj", "{637E3F67-C59B-4530-92DB-76E1508C2EB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphLibrary", "GraphLibrary\GraphLibrary.csproj", "{0A62C363-3FE2-4DEC-A6AB-ABEAC7BEB077}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +21,18 @@ Global
 		{44287265-50AB-445C-90CB-11D892A45FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44287265-50AB-445C-90CB-11D892A45FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44287265-50AB-445C-90CB-11D892A45FAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE5C528B-074A-4F1D-9111-213B148C0507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE5C528B-074A-4F1D-9111-213B148C0507}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE5C528B-074A-4F1D-9111-213B148C0507}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE5C528B-074A-4F1D-9111-213B148C0507}.Release|Any CPU.Build.0 = Release|Any CPU
+		{637E3F67-C59B-4530-92DB-76E1508C2EB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{637E3F67-C59B-4530-92DB-76E1508C2EB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{637E3F67-C59B-4530-92DB-76E1508C2EB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{637E3F67-C59B-4530-92DB-76E1508C2EB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A62C363-3FE2-4DEC-A6AB-ABEAC7BEB077}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A62C363-3FE2-4DEC-A6AB-ABEAC7BEB077}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A62C363-3FE2-4DEC-A6AB-ABEAC7BEB077}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A62C363-3FE2-4DEC-A6AB-ABEAC7BEB077}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

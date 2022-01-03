@@ -2,7 +2,9 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using GraphLibrary;
 using NAudio.Dsp;
+using SignalLibrary;
 
 namespace DopplerRadar
 {
@@ -10,7 +12,7 @@ namespace DopplerRadar
     {
         private delegate void SafeCallDelegate(float[] soundData, Complex[] spectrum);
 
-        private readonly SignalProcessor _signalProcessor = new SignalProcessor();
+        private readonly DopplerSignalProcessor _dopplerSignalProcessor = new DopplerSignalProcessor();
         private int _windowFreq = 200;
         private DirectBitmap _dbmSpectrum;
         private readonly Font _drawFont = new Font("Arial", 24, FontStyle.Bold);
@@ -25,25 +27,26 @@ namespace DopplerRadar
         private void btnStart_Click(object sender, EventArgs e)
         {
             IAsyncResult asyncResult = null;
-            _signalProcessor.StartRecord((soundData, spectrum) =>
+            _dopplerSignalProcessor.OnDataAvailable += (soundData, spectrum) =>
             {
                 if ((asyncResult == null || asyncResult.IsCompleted))
                 {
                     asyncResult = BeginInvoke(new SafeCallDelegate(UIOnAudioDataReceived), soundData, spectrum);
                 }
-            });
+            };
+            _dopplerSignalProcessor.StartRecord();
         }
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-            _signalProcessor.StopRecord();
+            _dopplerSignalProcessor.StopRecord();
         }
 
         private void UIOnAudioDataReceived(float[] soundData, Complex[] spectrum)
         {
-            const float frameFreq = (float)SignalProcessor.SampleRate / SignalProcessor.FftBlockSize;
-            var lowFreqToShow = SignalProcessor.CentralFreq - _windowFreq;
-            var highFreqToShow = SignalProcessor.CentralFreq + _windowFreq;
+            const float frameFreq = (float)DopplerSignalProcessor.SampleRate / DopplerSignalProcessor.FftBlockSize;
+            var lowFreqToShow = DopplerSignalProcessor.CentralFreq - _windowFreq;
+            var highFreqToShow = DopplerSignalProcessor.CentralFreq + _windowFreq;
             var lowBinToShow = (int)(lowFreqToShow / frameFreq);
             var highBinToShow = (int)(highFreqToShow / frameFreq);
 
@@ -74,12 +77,12 @@ namespace DopplerRadar
                     g.DrawLine(_whitePen,
                         i * xScale, _dbmSpectrum.Height, toX,
                         toY + 10);
-                    if (scaledAmplitude > _dbmSpectrum.Height / 3)
+                    if (scaledAmplitude > _dbmSpectrum.Height / 3f)
                     {
                         var freq = (i + lowBinToShow) * frameFreq;
                         if (showSpeed)
                         {
-                            var rf = freq / SignalProcessor.CentralFreq;
+                            var rf = freq / DopplerSignalProcessor.CentralFreq;
                             var speed = (_soundSpeed * (rf - 1) / (rf + 1));
                             var captionSpeed = speed.ToString("F2");
                             g.DrawString(captionSpeed, _drawFont, Brushes.LawnGreen, toX, toY);
@@ -124,7 +127,7 @@ namespace DopplerRadar
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _signalProcessor.StopRecord();
+            _dopplerSignalProcessor.StopRecord();
         }
     }
 }
