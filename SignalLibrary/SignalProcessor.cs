@@ -87,9 +87,12 @@ namespace SignalLibrary
                     }
                     else
                     {
-                        Array.Copy(data, sourceDataOffset, collectedSoundData, collectedSoundDataLength, remainedElements);
-                        collectedSoundDataLength += remainedElements;
-                        sourceDataOffset += remainedElements;
+                        var n = data.Length >= sourceDataOffset + remainedElements
+                            ? remainedElements
+                            : data.Length - sourceDataOffset;
+                        Array.Copy(data, sourceDataOffset, collectedSoundData, collectedSoundDataLength, n);
+                        collectedSoundDataLength += n;
+                        sourceDataOffset += n;
                     }
 
                     if (collectedSoundDataLength == expectedSamples)

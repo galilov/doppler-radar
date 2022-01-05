@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Numerics;
+using SignalLibrary;
 
-namespace SignalLibrary
+namespace PhaseDetector
 {
-    public class PhaseSignalProcessor : SignalProcessor
+    class PhaseSignalProcessor : SignalProcessor
     {
         public const int SampleRate = 96000;
         public const double TransmitterFreq = 40000; // Hz
@@ -36,14 +37,14 @@ namespace SignalLibrary
             var receivedBin = DFT(collectedSoundData, (int)(TransmitterFreq / FreqPerFourierBin), false);
             var transmittedPhase = transmittedBin.Phase;
             var receivedPhase = receivedBin.Phase;
-            var delta = transmittedPhase - receivedPhase;
+            var delta = receivedPhase - transmittedPhase;
             if (delta < 0)
             {
                 delta = 2 * Math.PI + delta;
             }
 
-            var waveLength = GetAirSoundSpeed(Interlocked.CompareExchange(ref _temperature, 0, 0)) / TransmitterFreq;
-            var phaseOffsetMillimeters = waveLength * delta * 1000 / Math.PI / (ReflectedMode ? 4 : 2);
+            var waveLength = 1000 * GetAirSoundSpeed(Interlocked.CompareExchange(ref _temperature, 0, 0)) / TransmitterFreq;
+            var phaseOffsetMillimeters = waveLength * delta / Math.PI / (ReflectedMode ? 4 : 2);
 
             OnDataAvalable(phaseOffsetMillimeters);
         }

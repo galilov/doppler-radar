@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
-using SignalLibrary;
 
 namespace PhaseDetector
 {
     public partial class MainForm : Form
     {
-        private delegate void SafeCallDelegate(double m);
         private readonly PhaseSignalProcessor _signalProcessor = new PhaseSignalProcessor();
+        private double _zero, _millimeters;
 
         public MainForm()
         {
@@ -17,11 +16,12 @@ namespace PhaseDetector
         private void btnStart_Click(object sender, EventArgs e)
         {
             IAsyncResult asyncResult = null;
+            var d = new Action<double>(UIOnDataReceived);
             _signalProcessor.OnDataAvalable = m =>
             {
                 if ((asyncResult == null || asyncResult.IsCompleted))
                 {
-                    asyncResult = BeginInvoke(new SafeCallDelegate(UIOnAudioDataReceived), m);
+                    asyncResult = BeginInvoke(d, m);
                 }
             };
             _signalProcessor.StartRecord();
@@ -32,9 +32,10 @@ namespace PhaseDetector
             _signalProcessor.StopRecord();
         }
 
-        private void UIOnAudioDataReceived(double millimeters)
+        private void UIOnDataReceived(double millimeters)
         {
-            lbAmplitude.Text = millimeters.ToString("F1");
+            _millimeters = millimeters;
+            lbAmplitude.Text = (_millimeters - _zero).ToString("F1");
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -44,7 +45,7 @@ namespace PhaseDetector
 
         private void numTemperature_ValueChanged(object sender, EventArgs e)
         {
-            _signalProcessor.Temperature = (int) numTemperature.Value;
+            _signalProcessor.Temperature = (int)numTemperature.Value;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -56,6 +57,18 @@ namespace PhaseDetector
         private void chckReflected_CheckedChanged(object sender, EventArgs e)
         {
             _signalProcessor.ReflectedMode = chckReflected.Checked;
+        }
+
+        private void chckZeroLevel_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chckZeroLevel.Checked)
+            {
+                _zero = _millimeters;
+            }
+            else
+            {
+                _zero = 0;
+            }
         }
     }
 }

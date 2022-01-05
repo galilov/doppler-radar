@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
 using NAudio.Dsp;
+using SignalLibrary;
 
-namespace SignalLibrary
+namespace DopplerRadar
 {
-    public class DopplerSignalProcessor : SignalProcessor
+    class DopplerSignalProcessor : SignalProcessor
     {
         public const int SampleRate = 96000; // Bin/s
         public const int Log2OfBinCount = 14;
@@ -20,8 +21,8 @@ namespace SignalLibrary
         protected override void ProcessAudioData(float[] collectedSoundData)
         {
             var complexData = collectedSoundData
-                    .Select(x => new Complex { X = x, Y = 0 })
-                    .ToArray();
+                .Select(x => new Complex { X = x, Y = 0 })
+                .ToArray();
             FastFourierTransform.FFT(true, Log2OfBinCount, complexData);
             OnDataAvailable?.Invoke(collectedSoundData.ToArray(), complexData);
         }

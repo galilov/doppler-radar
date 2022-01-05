@@ -4,14 +4,11 @@ using System.Linq;
 using System.Windows.Forms;
 using GraphLibrary;
 using NAudio.Dsp;
-using SignalLibrary;
 
 namespace DopplerRadar
 {
     public partial class MainForm : Form
     {
-        private delegate void SafeCallDelegate(float[] soundData, Complex[] spectrum);
-
         private readonly DopplerSignalProcessor _dopplerSignalProcessor = new DopplerSignalProcessor();
         private int _windowFreq = 200;
         private DirectBitmap _dbmSpectrum;
@@ -27,11 +24,12 @@ namespace DopplerRadar
         private void btnStart_Click(object sender, EventArgs e)
         {
             IAsyncResult asyncResult = null;
+            var d = new Action<float[], Complex[]>(UIOnAudioDataReceived);
             _dopplerSignalProcessor.OnDataAvailable += (soundData, spectrum) =>
             {
-                if ((asyncResult == null || asyncResult.IsCompleted))
+                if (asyncResult == null || asyncResult.IsCompleted)
                 {
-                    asyncResult = BeginInvoke(new SafeCallDelegate(UIOnAudioDataReceived), soundData, spectrum);
+                    asyncResult = BeginInvoke(d, soundData, spectrum);
                 }
             };
             _dopplerSignalProcessor.StartRecord();
@@ -122,7 +120,7 @@ namespace DopplerRadar
 
         private void UpdateSoundSpeed()
         {
-            _soundSpeed = 331 + 0.6f * (int)numTemperature.Value;
+            _soundSpeed = SignalLibrary.SignalProcessor.GetAirSoundSpeed((int) numTemperature.Value);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
