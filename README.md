@@ -1,2 +1,3 @@
 # doppler-radar
-doppler radar, cw radar, fmcw radar
+doppler radar, pulse radar
+Video: https://youtu.be/y1wk9jut_OU

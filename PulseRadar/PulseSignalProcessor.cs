@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 using SignalLibrary;
 
 namespace PulseRadar
@@ -12,7 +7,7 @@ namespace PulseRadar
     {
         public const int SampleRate = 192000;
         public const int TransmitterFreq = 38400; // Hz
-        public const int FourieBlockSize = 11 * SampleRate / TransmitterFreq;
+        public const int FourieBlockSize = 1 * SampleRate / TransmitterFreq;
         private const int _signalWindowBins = 2 * SampleRate / 340 / FourieBlockSize * FourieBlockSize;
         private readonly double[] _pulse = new double[FourieBlockSize];
         private readonly Goertzel _goertzelDirect = new Goertzel(SampleRate, FourieBlockSize, TransmitterFreq);
