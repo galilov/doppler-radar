@@ -11,7 +11,8 @@ namespace PulseRadar
     {
         private DirectBitmap _dbm;
         private readonly PulseSignalProcessor _signalProcessor = new PulseSignalProcessor();
-        private readonly Font _font = new Font("Arial", 24, FontStyle.Bold);
+        private readonly Font _font = new Font("Consolas", 24, FontStyle.Bold);
+        private readonly Font _fontCaption = new Font("Arial", 18, FontStyle.Bold);
         private int _temperature = 20;
         private float _distance, _zeroLevel;
 
@@ -62,7 +63,7 @@ namespace PulseRadar
                     var x = horizontalScale * i;
                     var yDirect = (float)(zeroLevel + data[0][index] * directScale) + 2;
                     var yReflected = (float)(zeroLevel - data[1][index] * reflectedScale) - 2;
-                    g.DrawLine(Pens.Red, xPrevDirect, yPrevDirect, x, yDirect);
+                    g.DrawLine(Pens.PaleVioletRed, xPrevDirect, yPrevDirect, x, yDirect);
                     g.DrawLine(Pens.GreenYellow, xPrevReflected, yPrevReflected, x, yReflected);
                     xPrevDirect = x;
                     yPrevDirect = yDirect;
@@ -79,9 +80,24 @@ namespace PulseRadar
                     Brushes.White,
                     delta * horizontalScale,
                     zeroLevel + 5);
-
+                UpdateStaticCaptions(g);
             }
             pb.Invalidate();
+        }
+
+        private SizeF _szTransmittedCaption = SizeF.Empty, _szReflectedCaption = SizeF.Empty;
+        private void UpdateStaticCaptions(Graphics g)
+        {
+            var transmitted = "TRANSMITTED";
+            var reflected = "REFLECTED";
+            if (_szTransmittedCaption.IsEmpty)
+            {
+                _szTransmittedCaption = g.MeasureString(transmitted, _fontCaption);
+                _szReflectedCaption = g.MeasureString(reflected, _fontCaption);
+            }
+
+            g.DrawString(transmitted, _fontCaption, Brushes.Red, _dbm.Width - _szTransmittedCaption.Width - 5, _dbm.Height - _szTransmittedCaption.Height - 5);
+            g.DrawString(reflected, _fontCaption, Brushes.GreenYellow, _dbm.Width - _szReflectedCaption.Width - 5, 5);
         }
 
         private static int CorrectXPos(int pos)

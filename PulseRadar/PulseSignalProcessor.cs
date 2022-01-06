@@ -15,8 +15,8 @@ namespace PulseRadar
         public const int FourieBlockSize = 11 * SampleRate / TransmitterFreq;
         private const int _signalWindowBins = 2 * SampleRate / 340 / FourieBlockSize * FourieBlockSize;
         private readonly double[] _pulse = new double[FourieBlockSize];
-        private readonly Goertzel _goertzelDirect = new Goertzel(SampleRate, FourieBlockSize, TransmitterFreq, true);
-        private readonly Goertzel _goertzelReflected = new Goertzel(SampleRate, FourieBlockSize, TransmitterFreq, true);
+        private readonly Goertzel _goertzelDirect = new Goertzel(SampleRate, FourieBlockSize, TransmitterFreq);
+        private readonly Goertzel _goertzelReflected = new Goertzel(SampleRate, FourieBlockSize, TransmitterFreq);
         private int _nCurrentSample;
         private double[][] _powers = { new double[_signalWindowBins], new double[_signalWindowBins] };
 
